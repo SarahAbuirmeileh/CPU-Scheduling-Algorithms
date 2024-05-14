@@ -3,8 +3,7 @@
 using namespace std;
 
 // This class for building the Process control Block (PCB) strucure
-class PCB
-{
+class PCB {
 public:
 
     // Process id
@@ -37,7 +36,7 @@ public:
     // The time from the request of the process until first time enter the cpu
     int responseTime;
 
-    // The methods of the PCB class
+    // Constrictor to create PCB for each process
     PCB(int id, int arrivalTime, int CPUBurst, int sizeInBytes) // Constructor
     {
         this->id = id;
