@@ -16,6 +16,7 @@ void readFromFile(string filePath, int processesNum, vector<PCB> &processes, int
     fin.open(filePath);
 
     fin >> contextSwitch >> quantum;
+    contextSwitch /= 1000;
     for (int i=0; i<processesNum; i++){
         fin >> id >> arrivalTime >> CPUBurst >> size;
         PCB process = PCB(id, arrivalTime, CPUBurst, size);
