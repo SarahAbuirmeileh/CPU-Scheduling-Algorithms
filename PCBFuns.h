@@ -6,7 +6,18 @@
 #include <vector>
 #include <algorithm>
 #include <deque>
+#include <climits>
 
+
+// To set the inital time 0 or the time in which the first process arrive
+void setInitialTime(int &time, vector<PCB> processes){
+    time = INT_MAX; // Initialize time to a large value
+
+    // Find the earliest arrival time
+    for (const auto &process : processes) {
+        time = min(time, process.arrivalTime);
+    }
+}
 
 // Sort processes according to their arrival time then according to id
 void sortOnArrivalTime(vector<PCB> &processes){

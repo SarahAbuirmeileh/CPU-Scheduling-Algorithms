@@ -1,22 +1,17 @@
 #include "PCB.h"
 #include "PCBFuns.h"
 #include <deque>
-#include <climits>
 
 using namespace std;
 
 
 // First Come First Serve Algorithm
 pair<int, vector<PCB>> FCFS(vector<PCB> processes, int context_switch = 0){
+
+    int time;
+    setInitialTime(time, processes);
+
     sortOnArrivalTime(processes);
-
-    int time = INT_MAX; // Initialize time to a large value
-
-    // Find the earliest arrival time
-    for (const auto &process : processes) {
-        time = min(time, process.arrivalTime);
-    }
-    
     for (PCB &current_process : processes){
         time += current_process.CPUBurst;
         processingInFCFS(time, current_process);
@@ -29,12 +24,9 @@ pair<int, vector<PCB>> FCFS(vector<PCB> processes, int context_switch = 0){
 
 // Shortest Job First Algorithm
 pair<int, vector<PCB>> SJF(vector<PCB> processes, int context_switch = 0){
-    int time = INT_MAX; // Initialize time to a large value
 
-    // Find the earliest arrival time
-    for (const auto &process : processes) {
-        time = min(time, process.arrivalTime);
-    }
+    int time;
+    setInitialTime(time, processes);
 
     deque<PCB> remain_processes(begin(processes), end(processes)); 
     while (!remain_processes.empty()){
