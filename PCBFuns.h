@@ -9,13 +9,13 @@
 #include <climits>
 #include <fstream>
 
-void readFromFile(string filePath, int processesNum, vector<PCB> &processes, int &contextSwitch){
+void readFromFile(string filePath, int processesNum, vector<PCB> &processes, int &contextSwitch, int &quantum){
     int id, arrivalTime, CPUBurst, size;
 
     ifstream fin;
     fin.open(filePath);
 
-    fin >> contextSwitch;
+    fin >> contextSwitch >> quantum;
     for (int i=0; i<processesNum; i++){
         fin >> id >> arrivalTime >> CPUBurst >> size;
         PCB process = PCB(id, arrivalTime, CPUBurst, size);
