@@ -22,6 +22,7 @@ void readFromFile(string filePath, int processesNum, vector<PCB> &processes, int
         PCB process = PCB(id, arrivalTime, CPUBurst, size);
         processes.push_back(process);
     }
+    fin.close();
 }
 
 void calculateStatistics(vector<PCB> &v, int end_of_all_processes_time, int number_of_processes){
