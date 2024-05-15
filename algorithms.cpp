@@ -91,6 +91,7 @@ pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int context_switch
     return {time, finished_processes};
 }
 
+// Shortest Remaining Time First 
 pair<int, vector<PCB>> SRT(vector<PCB> processes, int context_switch = 0) {
     
     int time;

@@ -3,39 +3,50 @@
 #include "PCB.h"
 #include "PCBFuns.h"
 
-
 using namespace std;
 
 int main(){
 
     vector<PCB> processes;
     pair<int, vector<PCB>> result ;
-    int contextSwitch, quantum;
+    int contextSwitch, quantum, processesNum;
 
-    readFromFile("processes/FCFS.txt", 3, processes, contextSwitch, quantum);
+    processesNum = 3;
+    readFromFile("processes/FCFS.txt", processesNum, processes, contextSwitch, quantum);
     result = FCFS(processes, contextSwitch);
+    cout << "• First Come First Serve Algorithm (FCFS) •" << endl << endl;
     printPCBInfo(result.second);
+    calculateStatistics(result.second, result.first, processesNum);
     processes.clear();
 
     cout << "------------------------------------------------------------" << endl << endl;
 
-    readFromFile("processes/SRT.txt", 4, processes, contextSwitch, quantum);
+    processesNum = 4;
+    readFromFile("processes/SRT.txt", processesNum, processes, contextSwitch, quantum);
     result = SRT(processes, contextSwitch);
+    cout <<"• Shortest Remaining Time First (SRT) •" << endl << endl;
     printPCBInfo(result.second);
+    calculateStatistics(result.second, result.first, processesNum);
     processes.clear();
 
     cout << "------------------------------------------------------------" << endl << endl;
     
-    readFromFile("processes/RR.txt", 3, processes, contextSwitch, quantum);
+    processesNum = 3;
+    readFromFile("processes/RR.txt", processesNum, processes, contextSwitch, quantum);
     result = RR(quantum ,processes, contextSwitch);
+    cout <<"• Round Robin algorithm (RR) •" << endl << endl;
     printPCBInfo(result.second);
+    calculateStatistics(result.second, result.first, processesNum);
     processes.clear();
 
     cout << "------------------------------------------------------------" << endl << endl;
 
-   readFromFile("processes/SJF.txt", 4, processes, contextSwitch, quantum);
+    processesNum = 4;
+    readFromFile("processes/SJF.txt", processesNum, processes, contextSwitch, quantum);
     result = SJF(processes, contextSwitch);
+    cout <<"• Shortest Job First Algorithm (SJF) •" << endl << endl;
     printPCBInfo(result.second);
+    calculateStatistics(result.second, result.first, processesNum);
     processes.clear();
 
     return 0;

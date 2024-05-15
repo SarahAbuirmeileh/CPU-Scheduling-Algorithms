@@ -23,6 +23,31 @@ void readFromFile(string filePath, int processesNum, vector<PCB> &processes, int
     }
 }
 
+void calculateStatistics(vector<PCB> &v, int end_of_all_processes_time, int number_of_processes){
+    
+    double AWT = 0; // average waiting time
+    double ATAT = 0; // average turnaround time
+    double CPUUtilizationRate = v.size();
+    double executionTime = 0;
+
+    // Calculating the sums of the statistics to find the average
+    for (PCB process : v){
+        ATAT += process.turnAroundTime;
+        AWT += process.waitingTime;
+        executionTime += process.CPUBurst;
+    }
+
+    CPUUtilizationRate = 1.0 * executionTime / end_of_all_processes_time * 100.0;
+
+    ATAT /= 1.0 * number_of_processes;
+    AWT /= 1.0 * number_of_processes;
+
+    cout << "\nResults:\n" 
+         << "•" << " Average Waiting Time = " << AWT << endl
+         << "•" << " Average Turnaround Time = " << ATAT << endl
+         << "•" << " CPU Utilization Rate = " << CPUUtilizationRate << '%' << endl << endl;
+}
+
 // To set the initial time 0 or the time at which the first process arrives
 void setInitialTime(int &time, vector<PCB> processes){
     time = INT_MAX; // Initialize time to a large value
