@@ -7,7 +7,7 @@ using namespace std;
 
 
 // First Come First Serve Algorithm
-pair<int, vector<PCB>> FCFS(vector<PCB> processes, int context_switch = 0){
+pair<int, vector<PCB>> FCFS(vector<PCB> processes, int contextSwitch = 0){
 
     int time;
     setInitialTime(time, processes);
@@ -20,16 +20,16 @@ pair<int, vector<PCB>> FCFS(vector<PCB> processes, int context_switch = 0){
         cout << "|0    " ;
     } 
 
-    for (PCB &current_process : processes){
-        int start_time = time;
-        time += current_process.CPUBurst;
-        cout << "|" << start_time << " P" << current_process.id << " ";
+    for (PCB &currentProcess : processes){
+        int startTime = time;
+        time += currentProcess.CPUBurst;
+        cout << "|" << startTime << " P" << currentProcess.id << " ";
 
-        processingInFCFS(time, current_process);
-        if (context_switch != 0){
-            time += context_switch;
+        processingInFCFS(time, currentProcess);
+        if (contextSwitch != 0){
+            time += contextSwitch;
             cout << " CS ";
-            for (int t = time - context_switch; t < time; ++t) {
+            for (int t = time - contextSwitch; t < time; ++t) {
                 cout << " ";
             }
             cout << " " << time;
@@ -42,11 +42,11 @@ pair<int, vector<PCB>> FCFS(vector<PCB> processes, int context_switch = 0){
 }
 
 // Shortest Job First Algorithm
-pair<int, vector<PCB>> SJF(vector<PCB> processes, int context_switch = 0){
+pair<int, vector<PCB>> SJF(vector<PCB> processes, int contextSwitch = 0){
 
     int time;
     setInitialTime(time, processes);
-    deque<PCB> remain_processes(begin(processes), end(processes)); 
+    deque<PCB> remainProcesses(begin(processes), end(processes)); 
 
     cout << "Gantt Chart for SJF Algorithm:" << endl;
     int lastEndTime = 0;
@@ -55,27 +55,27 @@ pair<int, vector<PCB>> SJF(vector<PCB> processes, int context_switch = 0){
         cout << "|0    " ;
     } 
 
-    while (!remain_processes.empty()){
+    while (!remainProcesses.empty()){
 
-        sortSJF(remain_processes, time);
+        sortSJF(remainProcesses, time);
 
-        PCB current_process = remain_processes.front();
-        remain_processes.pop_front();
+        PCB currentProcess = remainProcesses.front();
+        remainProcesses.pop_front();
 
-        int start_time = time;
+        int startTime = time;
 
-        cout << "|" << start_time << " ";
-        cout << "P" << current_process.id << " ";
+        cout << "|" << startTime << " ";
+        cout << "P" << currentProcess.id << " ";
 
-        time += current_process.CPUBurst;
+        time += currentProcess.CPUBurst;
         lastEndTime = time;
 
-        processingInSJF(time, current_process, processes);
+        processingInSJF(time, currentProcess, processes);
 
-        if (context_switch != 0){
-            time += context_switch;
+        if (contextSwitch != 0){
+            time += contextSwitch;
             cout << " CS ";
-            for (int t = start_time + current_process.CPUBurst; t < time; ++t) {
+            for (int t = startTime + currentProcess.CPUBurst; t < time; ++t) {
                 cout << " ";
             }
             cout << " " << time;
@@ -87,13 +87,13 @@ pair<int, vector<PCB>> SJF(vector<PCB> processes, int context_switch = 0){
 }
 
 // Round Robin algorithm
-pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int context_switch) {
+pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int contextSwitch) {
     int time = 0;
     setInitialTime(time, processes);
     
-    deque<PCB> remain_processes(processes.begin(), processes.end());
-    sortRR(remain_processes, time);
-    vector<PCB> finished_processes;
+    deque<PCB> remainProcesses(processes.begin(), processes.end());
+    sortRR(remainProcesses, time);
+    vector<PCB> finishedProcesses;
 
     cout << "Gantt Chart for RR Algorithm:" << endl;
     int lastEndTime = 0;
@@ -102,53 +102,53 @@ pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int context_switch
         cout << "|0    ";
     }
 
-    while (!remain_processes.empty()) {
-        PCB current_process = remain_processes.front();
-        remain_processes.pop_front();
+    while (!remainProcesses.empty()) {
+        PCB currentProcess = remainProcesses.front();
+        remainProcesses.pop_front();
 
-        bool last_time = current_process.remainingBurst <= quantum;
-        int process_time = last_time ? current_process.remainingBurst : quantum;
+        bool lastTime = currentProcess.remainingBurst <= quantum;
+        int processTime = lastTime ? currentProcess.remainingBurst : quantum;
 
-        int start_time = time;
-        cout << "|" << start_time << " ";
-        cout << "P" << current_process.id << " ";
+        int startTime = time;
+        cout << "|" << startTime << " ";
+        cout << "P" << currentProcess.id << " ";
         
-        time += process_time;
+        time += processTime;
         lastEndTime = time;
-        current_process = processingInRR(time, current_process, processes, last_time, quantum);
+        currentProcess = processingInRR(time, currentProcess, processes, lastTime, quantum);
 
-        if (current_process.remainingBurst <= 0) {
-            finished_processes.push_back(current_process);
+        if (currentProcess.remainingBurst <= 0) {
+            finishedProcesses.push_back(currentProcess);
         } else {
             // Move the process to the end of the queue
-            remain_processes.push_back(current_process);
+            remainProcesses.push_back(currentProcess);
         }
 
-        if (context_switch != 0) {
-            time += context_switch;
+        if (contextSwitch != 0) {
+            time += contextSwitch;
             cout << " CS ";
-            for (int t = start_time + process_time; t < time; ++t) {
+            for (int t = startTime + processTime; t < time; ++t) {
                 cout << " ";
             }
             cout << " " << time;
         }
 
-        sortRR(remain_processes, time);
+        sortRR(remainProcesses, time);
     }
     cout << "|" << time << endl << endl;
 
-    for (const auto &process : remain_processes) {
-        finished_processes.push_back(process);
+    for (const auto &process : remainProcesses) {
+        finishedProcesses.push_back(process);
     }
 
-    return {time, finished_processes};
+    return {time, finishedProcesses};
 }
 
 // Shortest Remaining Time First 
-pair<int, vector<PCB>> SRT(vector<PCB> processes, int context_switch = 0) {
+pair<int, vector<PCB>> SRT(vector<PCB> processes, int contextSwitch = 0) {
     int time;
     setInitialTime(time, processes);
-    vector<PCB> completed_processes;
+    vector<PCB> completedProcesses;
 
     cout << "Gantt Chart for SRT Algorithm:" << endl;
     int lastEndTime = 0;
@@ -160,39 +160,39 @@ pair<int, vector<PCB>> SRT(vector<PCB> processes, int context_switch = 0) {
     while (!processes.empty()) {
         sortSRT(processes, time);
 
-        PCB& current_process = processes.front();
+        PCB& currentProcess = processes.front();
 
-        if (current_process.arrivalTime > time) {
-            time = current_process.arrivalTime;
+        if (currentProcess.arrivalTime > time) {
+            time = currentProcess.arrivalTime;
         }
 
-        int start_time = time;
-        cout << "|" << start_time << " ";
-        cout << "P" << current_process.id << " ";
+        int startTime = time;
+        cout << "|" << startTime << " ";
+        cout << "P" << currentProcess.id << " ";
 
-        if (!completed_processes.empty() && context_switch != 0) {
-            time += context_switch;
+        if (!completedProcesses.empty() && contextSwitch != 0) {
+            time += contextSwitch;
             cout << " CS ";
-            for (int t = start_time; t < time; ++t) {
+            for (int t = startTime; t < time; ++t) {
                 cout << " ";
             }
             cout << " " << time;
         }
 
-        processingInSRT(time, current_process, processes);
+        processingInSRT(time, currentProcess, processes);
 
-        current_process.remainingBurst--;
+        currentProcess.remainingBurst--;
         time++;
-        current_process.lastTimeInReady = time;
+        currentProcess.lastTimeInReady = time;
 
-        if (current_process.remainingBurst <= 0) {
-            completed_processes.push_back(current_process);
+        if (currentProcess.remainingBurst <= 0) {
+            completedProcesses.push_back(currentProcess);
             processes.erase(processes.begin());
         }
     }
     cout << "|" << time << endl << endl;
 
-    return {time, completed_processes};
+    return {time, completedProcesses};
 }
 
 

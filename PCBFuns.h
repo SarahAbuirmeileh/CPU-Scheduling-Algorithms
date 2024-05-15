@@ -25,24 +25,24 @@ void readFromFile(string filePath, int processesNum, vector<PCB> &processes, int
     fin.close();
 }
 
-void calculateStatistics(vector<PCB> &v, int end_of_all_processes_time, int number_of_processes){
+void calculateStatistics(vector<PCB> processes, int endOfProcessesTime, int processesNum){
     
     double AWT = 0; // average waiting time
     double ATAT = 0; // average turnaround time
-    double CPUUtilizationRate = v.size();
+    double CPUUtilizationRate = processes.size();
     double executionTime = 0;
 
     // Calculating the sums of the statistics to find the average
-    for (PCB process : v){
+    for (PCB process : processes){
         ATAT += process.turnAroundTime;
         AWT += process.waitingTime;
         executionTime += process.CPUBurst;
     }
 
-    CPUUtilizationRate = 1.0 * executionTime / end_of_all_processes_time * 100.0;
+    CPUUtilizationRate = 1.0 * executionTime / endOfProcessesTime * 100.0;
 
-    ATAT /= 1.0 * number_of_processes;
-    AWT /= 1.0 * number_of_processes;
+    ATAT /= 1.0 * processesNum;
+    AWT /= 1.0 * processesNum;
 
     cout << "\nResults:\n" 
          << "•" << " Average Waiting Time = " << AWT << endl
@@ -64,6 +64,17 @@ void setInitialTime(int &time, vector<PCB> processes){
     }
 }
 
+void printPCBInfo(vector<PCB> &processes){
+    sort(begin(processes), end(processes),
+         [](PCB a, PCB b) // Comparator function
+         { return a.id <= b.id; });
+    for (PCB process : processes){ // For each item in loop to print the PCB information for each process
+        cout << "Process Id = " << process.id << '\n'
+              << "-" <<  " Finish Time = " << process.finishTime << '\n'
+              << "-" <<  " Waiting Time = " << process.waitingTime << '\n'
+              << "-" <<  " Turnaround Time = " << process.turnAroundTime << endl << endl;
+    }
+}
 
 // Sort processes according to their arrival time then according to id
 void sortOnArrivalTime(vector<PCB> &processes){
@@ -77,26 +88,14 @@ void sortOnArrivalTime(vector<PCB> &processes){
 }
 
 // To handle the processing of burst time in the FCFS
-void processingInFCFS(int time, PCB &p){
-    p.finishTime = time;
-    p.turnAroundTime = p.finishTime - p.arrivalTime;
-    p.waitingTime += (time - p.lastTimeInReady - p.remainingBurst);
-    p.lastTimeInReady = time - p.remainingBurst;
-    p.remainingBurst = 0;
-    if (p.responseTime == -1)
-        p.responseTime = p.lastTimeInReady - p.arrivalTime;
-}
-
-void printPCBInfo(vector<PCB> &processes){
-    sort(begin(processes), end(processes),
-         [](PCB a, PCB b) // Comparator function
-         { return a.id <= b.id; });
-    for (PCB process : processes){ // For each item in loop to print the PCB information for each process
-        cout << "Process Id = " << process.id << '\n'
-              << "-" <<  " Finish Time = " << process.finishTime << '\n'
-              << "-" <<  " Waiting Time = " << process.waitingTime << '\n'
-              << "-" <<  " Turnaround Time = " << process.turnAroundTime << endl << endl;
-    }
+void processingInFCFS(int time, PCB &process){
+    process.finishTime = time;
+    process.turnAroundTime = process.finishTime - process.arrivalTime;
+    process.waitingTime += (time - process.lastTimeInReady - process.remainingBurst);
+    process.lastTimeInReady = time - process.remainingBurst;
+    process.remainingBurst = 0;
+    if (process.responseTime == -1)
+        process.responseTime = process.lastTimeInReady - process.arrivalTime;
 }
 
 // Sort depends on CPU burst if the arrival time < current time
@@ -116,14 +115,11 @@ void sortSJF(deque<PCB> &d, int time){
 
 // To handle the processing of burst time in the SJF ALG
 void processingInSJF(int time, PCB &process, vector<PCB> &processes){
-    // Loop to find the index of the process in the vector
-    int id = process.id, index = -1;
-    for (int i = 0; i < processes.size(); i++){
-        if (id == processes[i].id){
-            index = i;
-            break;
-        }
-    }
+    
+    int id = process.id;
+    auto it = find_if(processes.begin(), processes.end(), [&id](const PCB& p) { return p.id == id; });
+    int index = distance(processes.begin(), it);
+
     processes[index].finishTime = time;
     processes[index].turnAroundTime = processes[index].finishTime - processes[index].arrivalTime;
     if (processes[index].remainingBurst > 0) {
@@ -149,13 +145,13 @@ void sortRR(deque<PCB> &d, int time) {
 }
 
 // To handle the processing of burst time in the RR ALG
-PCB processingInRR(int time, PCB &process, vector<PCB> &processes, bool last_time, int quantum) {
+PCB processingInRR(int time, PCB &process, vector<PCB> &processes, bool lastTime, int quantum) {
     
-    int current_waiting_time = time - min(quantum, process.remainingBurst ) - process.lastTimeInReady;
-    process.waitingTime += current_waiting_time;
+    int currentWaitingTime = time - min(quantum, process.remainingBurst ) - process.lastTimeInReady;
+    process.waitingTime += currentWaitingTime;
     
     // Update finish time and remaining burst time
-    if (last_time){
+    if (lastTime){
         process.finishTime = time;
     }
 
@@ -171,19 +167,7 @@ PCB processingInRR(int time, PCB &process, vector<PCB> &processes, bool last_tim
     return process;
 }
 
-
-void printPCBInfo(deque<PCB> &processes){
-    // sort(begin(processes), end(processes),
-    //      [](PCB a, PCB b) // Comparator function
-    //      { return a.id <= b.id; });
-    for (PCB process : processes){ // For each item in loop to print the PCB information for each process
-        cout << "Process Id = " << process.id << '\n'
-              << "-" <<  " Finish Time = " << process.finishTime << '\n'
-              << "-" <<  " Waiting Time = " << process.waitingTime << '\n'
-              << "-" <<  " Turnaround Time = " << process.turnAroundTime << endl << endl;
-    }
-}
-
+// Sort depends on cpu burst if the arrival time < current time
 void sortSRT(vector<PCB> &processes, int time) {
     sort(processes.begin(), processes.end(),
         [time](const PCB& a, const PCB& b) {

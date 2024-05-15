@@ -13,7 +13,7 @@ int main(){
 
     processesNum = 3;
     readFromFile("processes/FCFS.txt", processesNum, processes, contextSwitch, quantum);
-    cout << "• First Come First Serve Algorithm (FCFS) •" << endl << endl;
+    cout << endl << "• First Come First Serve Algorithm (FCFS) •" << endl << endl;
     result = FCFS(processes, contextSwitch);
     printPCBInfo(result.second);
     calculateStatistics(result.second, result.first, processesNum);
