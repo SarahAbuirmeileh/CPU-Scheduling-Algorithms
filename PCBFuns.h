@@ -9,7 +9,7 @@
 #include <climits>
 
 
-// To set the inital time 0 or the time in which the first process arrive
+// To set the initial time 0 or the time at which the first process arrives
 void setInitialTime(int &time, vector<PCB> processes){
     time = INT_MAX; // Initialize time to a large value
 
@@ -17,7 +17,12 @@ void setInitialTime(int &time, vector<PCB> processes){
     for (const auto &process : processes) {
         time = min(time, process.arrivalTime);
     }
+
+    if (time == INT_MAX) {
+        time = 0;
+    }
 }
+
 
 // Sort processes according to their arrival time then according to id
 void sortOnArrivalTime(vector<PCB> &processes){
@@ -89,4 +94,51 @@ void processingInSJF(int time, PCB &process, vector<PCB> &processes){
     processes[index].remainingBurst = 0;
     if (processes[index].responseTime == -1)
         processes[index].responseTime = processes[index].lastTimeInReady - processes[index].arrivalTime;
+}
+
+// Sort depends on id if the arrival time < current time
+void sortRR(deque<PCB> &d, int time) {
+    sort(d.begin(), d.end(),
+        [time](const PCB &a, const PCB &b) {
+            if (a.lastTimeInReady != b.lastTimeInReady)
+                return a.lastTimeInReady < b.lastTimeInReady;
+            else
+                return a.arrivalTime < b.arrivalTime;
+        });
+}
+
+// To handle the processing of burst time in the RR ALG
+PCB processingInRR(int time, PCB &process, vector<PCB> &processes, bool last_time, int quantum) {
+    
+    int current_waiting_time = time - min(quantum, process.remainingBurst ) - process.lastTimeInReady;
+    process.waitingTime += current_waiting_time;
+    
+    // Update finish time and remaining burst time
+    if (last_time){
+        process.finishTime = time;
+    }
+
+    process.remainingBurst -= quantum;
+    process.lastTimeInReady = time;
+
+    // Update response time if it's the first time in CPU
+    if (process.responseTime == -1)
+        process.responseTime = process.lastTimeInReady - process.arrivalTime;
+
+    process.turnAroundTime = process.finishTime - process.arrivalTime;
+    
+    return process;
+}
+
+
+void printPCBInfo(deque<PCB> &processes){
+    // sort(begin(processes), end(processes),
+    //      [](PCB a, PCB b) // Comparator function
+    //      { return a.id <= b.id; });
+    for (PCB process : processes){ // For each item in loop to print the PCB information for each process
+        cout << "Process Id = " << process.id << '\n'
+              << "-" <<  " Finish Time = " << process.finishTime << '\n'
+              << "-" <<  " Waiting Time = " << process.waitingTime << '\n'
+              << "-" <<  " Turnaround Time = " << process.turnAroundTime << endl << endl;
+    }
 }

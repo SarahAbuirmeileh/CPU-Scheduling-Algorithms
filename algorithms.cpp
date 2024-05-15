@@ -43,3 +43,82 @@ pair<int, vector<PCB>> SJF(vector<PCB> processes, int context_switch = 0){
     }
     return {time, processes};
 }
+
+
+// Round Robin algorithm
+// pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int context_switch = 0){
+
+    // int time;
+    // setInitialTime(time, processes);
+
+    // deque<PCB> remain_processes(begin(processes), end(processes)); // Give the processes to the deque
+    // sortRR(remain_processes, time);
+
+    // while (!remain_processes.empty()){
+    //     PCB current_process = remain_processes.front();
+    //     remain_processes.pop_front();
+
+    //     if (quantum >= current_process.remainingBurst){
+    //         time += current_process.remainingBurst;
+    //         processingInRR(time, current_process, processes, true, quantum);
+    //     } else {
+    //         time += quantum;
+    //         PCB new_process = processingInRR(time, current_process, processes, false, quantum);
+    //         remain_processes.push_back(new_process);
+    //     }
+
+    //     sortRR(remain_processes, time);
+
+    //     if (context_switch != 0 && !remain_processes.empty()){
+    //         time += context_switch;
+    //     }
+    // }
+    // return {time, processes};
+
+// }
+
+
+pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int context_switch) {
+    int time = 0;
+    setInitialTime(time, processes);
+    
+    deque<PCB> remain_processes(processes.begin(), processes.end());
+    sortRR(remain_processes, time);
+    vector<PCB> finished_processes;
+
+    while (!remain_processes.empty()) {
+        PCB current_process = remain_processes.front();
+        remain_processes.pop_front();
+
+        // Check if the remaining burst time is less than the quantum
+        bool last_time = current_process.remainingBurst <= quantum;
+
+        // Calculate the time for current process
+        int process_time = last_time ? current_process.remainingBurst : quantum;
+
+        // Process the current process
+        time += process_time;
+        current_process = processingInRR(time, current_process, processes, last_time, quantum);
+
+        // Check if the process is finished
+        if (current_process.remainingBurst <= 0) {
+            finished_processes.push_back(current_process);
+        } else {
+            // Move the process to the end of the queue
+            remain_processes.push_back(current_process);
+        }
+
+        if (context_switch != 0) {
+            time += context_switch;
+        }
+
+        sortRR(remain_processes, time);
+    }
+
+    // Concatenate finished processes with remaining processes
+    for (const auto &process : remain_processes) {
+        finished_processes.push_back(process);
+    }
+
+    return {time, finished_processes};
+}
