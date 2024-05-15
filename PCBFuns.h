@@ -7,7 +7,21 @@
 #include <algorithm>
 #include <deque>
 #include <climits>
+#include <fstream>
 
+void readFromFile(string filePath, int processesNum, vector<PCB> &processes, int &contextSwitch){
+    int id, arrivalTime, CPUBurst, size;
+
+    ifstream fin;
+    fin.open(filePath);
+
+    fin >> contextSwitch;
+    for (int i=0; i<processesNum; i++){
+        fin >> id >> arrivalTime >> CPUBurst >> size;
+        PCB process = PCB(id, arrivalTime, CPUBurst, size);
+        processes.push_back(process);
+    }
+}
 
 // To set the initial time 0 or the time at which the first process arrives
 void setInitialTime(int &time, vector<PCB> processes){

@@ -8,43 +8,35 @@ using namespace std;
 
 int main(){
 
-    // PCB p1 = PCB(1, 0, 24, 12);
-    // PCB p2 = PCB(2, 0, 3, 12);
-    // PCB p3 = PCB(3, 0, 3, 12);
+    vector<PCB> processes;
+    pair<int, vector<PCB>> result ;
+    int contextSwitch;
 
-    // vector<PCB> processes = {p1, p2, p3};
+    readFromFile("processes/FCFS.txt", 3, processes, contextSwitch);
+    result = FCFS(processes, contextSwitch);
+    printPCBInfo(result.second);
+    processes.clear();
 
-    // pair<int, vector<PCB>> result = FCFS(processes, 0);
-    // printPCBInfo(result.second);
+    cout << "------------------------------------------------------------" << endl << endl;
+
+    readFromFile("processes/SRT.txt", 4, processes, contextSwitch);
+    result = SRT(processes, contextSwitch);
+    printPCBInfo(result.second);
+    processes.clear();
+
+    cout << "------------------------------------------------------------" << endl << endl;
     
-    // PCB p1 = PCB(1, 2, 6, 12);
-    // PCB p2 = PCB(2, 2, 8, 12);
-    // PCB p3 = PCB(3, 3, 7, 12);
-    // PCB p4 = PCB(41, 3, 3, 12);
+    readFromFile("processes/RR.txt", 3, processes, contextSwitch);
+    result = RR(4 ,processes, 0);
+    printPCBInfo(result.second);
+    processes.clear();
 
-    // vector<PCB> processes = {p1, p2, p3, p4};
+    cout << "------------------------------------------------------------" << endl << endl;
 
-    // pair<int, vector<PCB>> result = SJF(processes, 0);
-    // printPCBInfo(result.second);
-
-    // PCB p1 = PCB(1, 0, 24, 12);
-    // PCB p2 = PCB(2, 0, 3, 12);
-    // PCB p3 = PCB(3, 0, 3, 12);
-
-    // vector<PCB> processes = {p1, p2, p3};
-
-    // pair<int, vector<PCB>> result = RR(4 ,processes, 0);
-    //      printPCBInfo(result.second);
-
-    PCB p1 = PCB(1, 0, 8, 12);
-    PCB p2 = PCB(2, 1, 4, 12);
-    PCB p3 = PCB(3, 2, 9, 12);
-    PCB p4 = PCB(4, 3, 5, 12);
-
-    vector<PCB> processes = {p1, p2, p3, p4};
-
-    pair<int, vector<PCB>> result = SRT(processes, 0);
-      printPCBInfo(result.second);
+   readFromFile("processes/SJF.txt", 4, processes, contextSwitch);
+    result = SJF(processes, 0);
+    printPCBInfo(result.second);
+    processes.clear();
 
     return 0;
 }

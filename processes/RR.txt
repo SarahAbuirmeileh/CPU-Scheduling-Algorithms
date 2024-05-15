@@ -1,0 +1,7 @@
+0
+1 0 24 12
+2 0 3 12
+3 0 3 12
+
+// Context switch
+// id arrivalTime CPUBurst size
