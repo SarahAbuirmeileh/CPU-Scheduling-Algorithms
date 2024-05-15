@@ -142,3 +142,30 @@ void printPCBInfo(deque<PCB> &processes){
               << "-" <<  " Turnaround Time = " << process.turnAroundTime << endl << endl;
     }
 }
+
+void sortSRT(vector<PCB> &processes, int time) {
+    sort(processes.begin(), processes.end(),
+        [time](const PCB& a, const PCB& b) {
+            if (a.arrivalTime <= time && b.arrivalTime <= time)
+                return a.remainingBurst < b.remainingBurst;
+            else if (a.arrivalTime <= time)
+                return true;
+            else if (b.arrivalTime <= time)
+                return false;
+            else
+                return a.id < b.id;
+        });
+}
+
+// Function to handle processing of burst time in the SRT algorithm
+void processingInSRT(int time, PCB &process, vector<PCB> &processes) {
+
+    process.finishTime = time+1;
+    process.turnAroundTime = process.finishTime - process.arrivalTime;
+
+    if (process.responseTime == -1)
+        process.responseTime = process.lastTimeInReady - process.arrivalTime;
+
+    process.waitingTime += time  - process.lastTimeInReady;
+
+}

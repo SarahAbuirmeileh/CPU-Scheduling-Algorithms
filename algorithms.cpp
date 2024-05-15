@@ -46,38 +46,6 @@ pair<int, vector<PCB>> SJF(vector<PCB> processes, int context_switch = 0){
 
 
 // Round Robin algorithm
-// pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int context_switch = 0){
-
-    // int time;
-    // setInitialTime(time, processes);
-
-    // deque<PCB> remain_processes(begin(processes), end(processes)); // Give the processes to the deque
-    // sortRR(remain_processes, time);
-
-    // while (!remain_processes.empty()){
-    //     PCB current_process = remain_processes.front();
-    //     remain_processes.pop_front();
-
-    //     if (quantum >= current_process.remainingBurst){
-    //         time += current_process.remainingBurst;
-    //         processingInRR(time, current_process, processes, true, quantum);
-    //     } else {
-    //         time += quantum;
-    //         PCB new_process = processingInRR(time, current_process, processes, false, quantum);
-    //         remain_processes.push_back(new_process);
-    //     }
-
-    //     sortRR(remain_processes, time);
-
-    //     if (context_switch != 0 && !remain_processes.empty()){
-    //         time += context_switch;
-    //     }
-    // }
-    // return {time, processes};
-
-// }
-
-
 pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int context_switch) {
     int time = 0;
     setInitialTime(time, processes);
@@ -122,3 +90,41 @@ pair<int, vector<PCB>> RR(int quantum, vector<PCB> processes, int context_switch
 
     return {time, finished_processes};
 }
+
+pair<int, vector<PCB>> SRT(vector<PCB> processes, int context_switch = 0) {
+    
+    int time;
+    setInitialTime(time, processes);
+    
+    vector<PCB> completed_processes;
+
+    while (!processes.empty()) {
+        sortSRT(processes, time);
+
+        PCB& current_process = processes.front();
+
+        if (current_process.arrivalTime > time) {
+            time = current_process.arrivalTime;
+        }
+
+        if (!completed_processes.empty() && context_switch != 0) {
+            time += context_switch;
+        }
+
+        processingInSRT(time, current_process, processes);
+
+        current_process.remainingBurst--;
+        time++;
+        current_process.lastTimeInReady = time;
+
+        if (current_process.remainingBurst <= 0) {
+            completed_processes.push_back(current_process);
+            processes.erase(processes.begin());
+        }
+
+    }
+
+    return {time, completed_processes};
+}
+
+
