@@ -13,8 +13,8 @@ int main(){
 
     processesNum = 3;
     readFromFile("processes/FCFS.txt", processesNum, processes, contextSwitch, quantum);
-    result = FCFS(processes, contextSwitch);
     cout << "• First Come First Serve Algorithm (FCFS) •" << endl << endl;
+    result = FCFS(processes, contextSwitch);
     printPCBInfo(result.second);
     calculateStatistics(result.second, result.first, processesNum);
     processes.clear();
@@ -23,8 +23,8 @@ int main(){
 
     processesNum = 4;
     readFromFile("processes/SRT.txt", processesNum, processes, contextSwitch, quantum);
-    result = SRT(processes, contextSwitch);
     cout <<"• Shortest Remaining Time First (SRT) •" << endl << endl;
+    result = SRT(processes, contextSwitch);
     printPCBInfo(result.second);
     calculateStatistics(result.second, result.first, processesNum);
     processes.clear();
@@ -33,8 +33,8 @@ int main(){
     
     processesNum = 3;
     readFromFile("processes/RR.txt", processesNum, processes, contextSwitch, quantum);
-    result = RR(quantum ,processes, contextSwitch);
     cout <<"• Round Robin algorithm (RR) •" << endl << endl;
+    result = RR(quantum ,processes, contextSwitch);
     printPCBInfo(result.second);
     calculateStatistics(result.second, result.first, processesNum);
     processes.clear();
@@ -43,8 +43,8 @@ int main(){
 
     processesNum = 4;
     readFromFile("processes/SJF.txt", processesNum, processes, contextSwitch, quantum);
-    result = SJF(processes, contextSwitch);
     cout <<"• Shortest Job First Algorithm (SJF) •" << endl << endl;
+    result = SJF(processes, contextSwitch);
     printPCBInfo(result.second);
     calculateStatistics(result.second, result.first, processesNum);
     processes.clear();
