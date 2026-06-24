@@ -55,3 +55,10 @@ The program generates Gantt charts and calculates the following statistics for e
 * Average Waiting Time
 * Average Turnaround Time
 * CPU Utilization Rate
+
+
+## Author
+
+**Sarah Abu Irmeileh**
+- GitHub: [@SarahAbuirmeileh](https://github.com/SarahAbuirmeileh)
+- LinkedIn: [Sarah Abu Irmeileh](https://www.linkedin.com/in/sarah-abu-irmeileh)
